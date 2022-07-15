@@ -19,7 +19,7 @@
           <span class="text">问答</span>
         </template>
       </van-tabbar-item>
-      <van-tabbar-item to="/my">
+      <van-tabbar-item to="/profile">
         <template>
           <span class="toutiao toutiao-wode"></span>
           <span class="text">我的</span>
