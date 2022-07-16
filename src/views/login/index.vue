@@ -87,7 +87,7 @@ export default {
       })
       try {
         const res = await login(this.mobile, this.code)
-        console.log(res)
+        // console.log(res)
         // 存储token
         this.$store.commit('setToken', res.data.data)
         this.$toast.success('登陆成功')

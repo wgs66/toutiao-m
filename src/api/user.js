@@ -15,8 +15,23 @@ export const login = (mobile, code) => {
   })
 }
 
+/**
+ *发送验证码
+ * @param {String} mobile 手机号
+ * @returns Promise
+ */
 export const sendCode = (mobile) => {
   return request({
     url: `/v1_0/sms/codes/${mobile}`
+  })
+}
+
+/**
+ *获取用户自己的信息
+ * @returns Promise
+ */
+export const getUserInfo = () => {
+  return request({
+    url: '/v1_0/user'
   })
 }
