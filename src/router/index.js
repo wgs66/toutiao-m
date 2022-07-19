@@ -18,6 +18,10 @@ const routes = [
       { path: '/qa', component: () => import('@/views/QA') },
       { path: '/profile', component: () => import('@/views/My') }
     ]
+  },
+  {
+    path: '/search',
+    component: () => import('@/views/search')
   }
 ]
 
