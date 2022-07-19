@@ -84,6 +84,7 @@
 <script>
 import { getUserInfo } from '@/api'
 export default {
+  name: 'My',
   data() {
     return {
       userInfo: {}
