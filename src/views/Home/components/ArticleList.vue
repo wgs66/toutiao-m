@@ -72,7 +72,7 @@ export default {
       try {
         const { data } = await getArticlesList(this.id, this.pre_timestamp)
         console.log(data)
-
+        console.log(!data.data.pre_timestamp)
         if (!data.data.pre_timestamp) {
           this.isFinished = true
         }

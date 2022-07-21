@@ -12,7 +12,16 @@
       />
     </form>
 
-    <component :is="componentName" :keyWords="keywords"></component>
+    <component
+      :is="componentName"
+      :keyWords="keywords"
+      @searchItem="searchItems"
+      :results="items"
+      :items="itemList"
+      @delItems="delIeme"
+      @delAllItem="delAll"
+      @toSearch="toSearchHistory"
+    ></component>
   </div>
 </template>
 
@@ -20,6 +29,7 @@
 import SearchHistory from './components/SearchHistory.vue'
 import SearchResult from './components/SearchResult.vue'
 import SearchSuggestion from './components/SearchSuggestion.vue'
+import { removeItem, setItemLIST, getItemLIST } from '@/api'
 export default {
   components: {
     SearchHistory,
@@ -29,7 +39,9 @@ export default {
   data() {
     return {
       keywords: '',
-      isShowSearchResults: false
+      isShowSearchResults: false,
+      items: '',
+      itemList: getItemLIST() || []
     }
   },
   computed: {
@@ -40,22 +52,60 @@ export default {
       }
       // 显示搜索结果
       if (this.isShowSearchResults) {
-        return 'SearchResults'
+        return 'SearchResult'
       }
       // 显示搜索建议
       return 'SearchSuggestion'
     }
   },
   methods: {
-    onSearch() {
+    onSearch(val) {
       this.isShowSearchResults = true
-      console.log(123)
+      // console.log(123)
+      this.items = val
+      if (val.trim() !== '') {
+        this.itemList.unshift(val)
+        setItemLIST(this.itemList)
+      }
     },
     backToPrePage() {
       this.$router.go(-1)
     },
     visibleSearchSuggestion() {
-      this.isShowSearchSuggestions = false
+      this.isShowSearchResults = false
+    },
+    searchItems(q) {
+      this.items = q
+      // this.onSearch()
+      // console.log(q)
+      this.isShowSearchResults = true
+
+      this.keywords = this.items
+      this.itemList.unshift(q)
+
+      setItemLIST(this.itemList)
+    },
+    delIeme(index) {
+      // console.log(index)
+      this.itemList.splice(index, 1)
+      setItemLIST(this.itemList)
+    },
+    delAll() {
+      removeItem()
+      this.itemList = getItemLIST() || []
+    },
+    toSearchHistory(val) {
+      // console.log(val)
+      this.items = val
+      this.isShowSearchResults = true
+      this.keywords = this.items
+      // ---------------------------
+      const index = this.itemList.indexOf(val)
+      this.itemList.splice(index, 1)
+      this.itemList.unshift(val)
+      setItemLIST(this.itemList)
+
+      // console.log(index)
     }
   }
 }
