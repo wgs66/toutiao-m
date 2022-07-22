@@ -35,3 +35,39 @@ export const getUserInfo = () => {
     url: '/v1_0/user'
   })
 }
+
+/**
+ * 获取关注信息
+ * @returns Promise
+ */
+export const getFollowings = () => {
+  return request({
+    url: '/v1_0/user/followings',
+    method: 'POST'
+  })
+}
+
+/**
+ * 关注用户
+ * @param {Number} target 文章id
+ * @returns Promise
+ */
+export const postFollowings = (target) => {
+  return request({
+    url: '/v1_0/user/followings',
+    method: 'POST',
+    data: { target }
+  })
+}
+
+/**
+ * 取消关注用户
+ * @param {Number} target 文章id
+ * @returns Promise
+ */
+export const delFollowings = (target) => {
+  return request({
+    url: `/v1_0/user/followings/${target}`,
+    method: 'DELETE'
+  })
+}

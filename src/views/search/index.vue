@@ -63,7 +63,14 @@ export default {
       this.isShowSearchResults = true
       // console.log(123)
       this.items = val
-      if (val.trim() !== '') {
+      // console.log(this.itemList.indexOf(val) !== -1)
+      if (val.trim() !== '' && this.itemList.indexOf(val) === -1) {
+        this.itemList.unshift(val)
+        setItemLIST(this.itemList)
+      } else if (val.trim() !== '' && this.itemList.indexOf(val) !== -1) {
+        const index = this.itemList.indexOf(val)
+        // console.log(index)
+        this.itemList.splice(index, 1)
         this.itemList.unshift(val)
         setItemLIST(this.itemList)
       }
@@ -81,9 +88,15 @@ export default {
       this.isShowSearchResults = true
 
       this.keywords = this.items
-      this.itemList.unshift(q)
-
-      setItemLIST(this.itemList)
+      if (this.itemList.indexOf(q) === -1) {
+        this.itemList.unshift(q)
+        setItemLIST(this.itemList)
+      } else {
+        const index = this.itemList.indexOf(q)
+        this.itemList.splice(index, 1)
+        this.itemList.unshift(q)
+        setItemLIST(this.itemList)
+      }
     },
     delIeme(index) {
       // console.log(index)

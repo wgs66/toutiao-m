@@ -78,7 +78,7 @@ export default {
   methods: {
     async getAllChannels() {
       const { data } = await getAllChannels()
-      console.log(data)
+      // console.log(data)
       this.allChannels = data.data.channels
     },
     onClickChannel(channel, index) {
