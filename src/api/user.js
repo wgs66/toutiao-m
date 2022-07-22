@@ -48,26 +48,26 @@ export const getFollowings = () => {
 }
 
 /**
- * 关注用户
- * @param {Number} target 文章id
+ *关注用户
+ * @param {String} id //关注对象用户的id
  * @returns Promise
  */
-export const postFollowings = (target) => {
-  return request({
+export const followingsAPI = (id) =>
+  request({
     url: '/v1_0/user/followings',
     method: 'POST',
-    data: { target }
+    data: {
+      target: id
+    }
   })
-}
 
 /**
- * 取消关注用户
- * @param {Number} target 文章id
+ *关注用户
+ * @param {String} id //需要取消关注对象用户的id
  * @returns Promise
  */
-export const delFollowings = (target) => {
-  return request({
-    url: `/v1_0/user/followings/${target}`,
+export const cancelFollowingsAPI = (id) =>
+  request({
+    url: `/v1_0/user/followings/${id}`,
     method: 'DELETE'
   })
-}

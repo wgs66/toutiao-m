@@ -38,8 +38,8 @@
               round
               size="small"
               class="btn"
-              v-if="!newsList.is_followed"
-              @click="clickFollowings(id)"
+              v-if="!isFollowed"
+              @click="clickFollowings(newsList.aut_id)"
               ><van-icon name="plus" /> 关注</van-button
             >
             <van-button
@@ -48,7 +48,7 @@
               round
               size="small"
               class="btn btn2"
-              @click="clickFollowings(id)"
+              @click="clickFollowings(newsList.aut_id)"
             >
               已关注</van-button
             >
@@ -132,11 +132,11 @@ import {
   delCollection,
   postLikings,
   delLikings,
-  postFollowings,
-  delFollowings
+  followingsAPI,
+  cancelFollowingsAPI
 } from '@/api'
 import dayjs from '@/utils/dayjs.js'
-
+import stroage from '@/utils/storage'
 export default {
   name: 'Detail',
   data() {
@@ -162,12 +162,27 @@ export default {
           { name: '二维码', icon: 'qrcode' },
           { name: '小程序码', icon: 'weapp-qrcode' }
         ]
-      ]
+      ],
+      isFollowed: ''
     }
   },
   created() {
     this.getArticlesDetail()
     this.getCommentList()
+  },
+  computed: {
+    // 定义文章id为计算属性
+    artId() {
+      const ids = this.$route.params.article_id
+      console.log(ids)
+      // 添加判断，如果当用户刷新时params.id会被清空，所以会传一个undefind过来，导致数据丢失，所以这里判断传过来的是否为空，空则表示用户刷新了直接return本地存储的值，否则直接获取新的id进行覆盖即可
+      if (ids) {
+        stroage.set('ART_ID', ids)
+        return stroage.get('ART_ID').toString()
+      } else {
+        return stroage.get('ART_ID').toString()
+      }
+    }
   },
   methods: {
     onClickLeft() {
@@ -183,6 +198,8 @@ export default {
         const res = await getArticlesDetail(this.id)
         this.newsList = res.data.data
         console.log(res)
+        this.isFollowed = res.data.data.is_followed
+        console.log(this.isFollowed)
         this.content = res.data.data.content
       } catch (error) {
         this.$toast.fail('请刷新重试！')
@@ -277,10 +294,11 @@ export default {
     },
     // 关注用户
     async clickFollowings(id) {
-      this.newsList.is_followed = !this.newsList.is_followed
-      if (this.newsList.is_followed) {
+      // console.log(this.artId)
+      this.isFollowed = !this.isFollowed
+      if (this.isFollowed) {
         try {
-          await postFollowings(id)
+          await followingsAPI(id)
           this.$toast.success('已关注！')
         } catch (error) {
           const status = error.response.status
@@ -294,9 +312,9 @@ export default {
             this.$toast.fail('请刷新重试')
           }
         }
-      } else if (!this.newsList.is_followed) {
+      } else {
         try {
-          await delFollowings(id)
+          await cancelFollowingsAPI(id)
           this.$toast.success('已取消关注！')
         } catch (error) {
           const status = error.response.status
