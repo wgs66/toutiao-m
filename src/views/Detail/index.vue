@@ -136,7 +136,6 @@ import {
   cancelFollowingsAPI
 } from '@/api'
 import dayjs from '@/utils/dayjs.js'
-import stroage from '@/utils/storage'
 export default {
   name: 'Detail',
   data() {
@@ -170,36 +169,20 @@ export default {
     this.getArticlesDetail()
     this.getCommentList()
   },
-  computed: {
-    // 定义文章id为计算属性
-    artId() {
-      const ids = this.$route.params.article_id
-      console.log(ids)
-      // 添加判断，如果当用户刷新时params.id会被清空，所以会传一个undefind过来，导致数据丢失，所以这里判断传过来的是否为空，空则表示用户刷新了直接return本地存储的值，否则直接获取新的id进行覆盖即可
-      if (ids) {
-        stroage.set('ART_ID', ids)
-        return stroage.get('ART_ID').toString()
-      } else {
-        return stroage.get('ART_ID').toString()
-      }
-    }
-  },
   methods: {
     onClickLeft() {
       this.$router.go(-1)
     },
     // 获取新闻详情
     async getArticlesDetail() {
-      // this.$toast.loading({
-      //   message: '加载中...',
-      //   forbidClick: true
-      // })
+      this.$toast.loading({
+        message: '加载中...',
+        forbidClick: true
+      })
       try {
         const res = await getArticlesDetail(this.id)
         this.newsList = res.data.data
-        console.log(res)
         this.isFollowed = res.data.data.is_followed
-        console.log(this.isFollowed)
         this.content = res.data.data.content
       } catch (error) {
         this.$toast.fail('请刷新重试！')
@@ -222,17 +205,16 @@ export default {
     // 获取评论
     async getCommentList() {
       const res = await getCommentList('a', this.id)
-      // console.log(res)
       this.commentList = res.data.data
     },
 
     // 收藏文章
     async clickCollection(id) {
-      this.newsList.is_collected = !this.newsList.is_collected
-      if (this.newsList.is_collected) {
+      if (!this.newsList.is_collected) {
         try {
           this.$toast.success('操作成功！')
           await postCollection(id)
+          this.getArticlesDetail(this.id)
         } catch (error) {
           const status = error.response.status
           if (status === 400) {
@@ -245,10 +227,11 @@ export default {
             this.$toast.fail('请刷新重试')
           }
         }
-      } else if (!this.newsList.is_collected) {
+      } else {
         try {
           this.$toast.success('操作成功！')
           await delCollection(id)
+          this.getArticlesDetail(this.id)
         } catch (error) {
           this.$toast.fail('请刷新重试！')
         }
@@ -258,9 +241,9 @@ export default {
     async clickLikings(id) {
       if (this.newsList.attitude !== 1) {
         try {
-          this.newsList.attitude = 1
           await postLikings(id)
           this.$toast.success('操作成功！')
+          this.getArticlesDetail(this.id)
         } catch (error) {
           const status = error.response.status
           if (status === 400) {
@@ -275,9 +258,9 @@ export default {
         }
       } else if (this.newsList.attitude === 1 || this.newsList.attitude === 0) {
         try {
-          this.newsList.attitude = -1
           await delLikings(id)
           this.$toast.success('操作成功！')
+          this.getArticlesDetail(this.id)
         } catch (error) {
           const status = error.response.status
           if (status === 401) {
@@ -294,12 +277,11 @@ export default {
     },
     // 关注用户
     async clickFollowings(id) {
-      // console.log(this.artId)
-      this.isFollowed = !this.isFollowed
-      if (this.isFollowed) {
+      if (!this.isFollowed) {
         try {
           await followingsAPI(id)
           this.$toast.success('已关注！')
+          this.getArticlesDetail(this.id)
         } catch (error) {
           const status = error.response.status
           if (status === 400) {
@@ -315,6 +297,8 @@ export default {
       } else {
         try {
           await cancelFollowingsAPI(id)
+          this.getArticlesDetail(this.id)
+
           this.$toast.success('已取消关注！')
         } catch (error) {
           const status = error.response.status
