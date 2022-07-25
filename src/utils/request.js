@@ -5,8 +5,7 @@ import store from '@/store'
 
 // 配置
 const request = axios.create({
-  baseURL: 'http://toutiao.itheima.net',
-  timeout: 3000
+  baseURL: 'http://toutiao.itheima.net'
 })
 request.interceptors.request.use(
   (config) => {

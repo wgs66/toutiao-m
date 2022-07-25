@@ -241,7 +241,7 @@
             v-model="loadings"
             :finished="finisheds"
             finished-text="没有更多了"
-            :offset="50000"
+            :offset="500"
             @load="onLoading(items)"
             :error.sync="errors"
             error-text="请求失败，点击重新加载"
@@ -643,10 +643,10 @@ export default {
       // console.log(index)
       this.items = this.commentList[index]
       // console.log(this.items)
-      this.commentLists = []
-      this.$nextTick(() => {
-        this.finisheds = false
-      })
+      // this.commentLists = []
+      // this.$nextTick(() => {
+      //   this.finisheds = false
+      // })
     },
     // 文章回复评论点赞
     async clickiLkings(item) {

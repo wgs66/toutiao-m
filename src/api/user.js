@@ -71,3 +71,39 @@ export const cancelFollowingsAPI = (id) =>
     url: `/v1_0/user/followings/${id}`,
     method: 'DELETE'
   })
+
+/**
+ * 获取用户个人资料
+ * @returns Promise
+ */
+export const getUserProfile = () => {
+  return request({
+    url: '/v1_0/user/profile'
+  })
+}
+
+/**
+ * 更新编辑用户头像
+ * @param {*} data
+ * @returns Promise
+ */
+export const uploadPhoto = (data) => {
+  return request({
+    url: '/v1_0/user/photo',
+    data,
+    method: 'PATCH'
+  })
+}
+
+/**
+ * 修改个人信息
+ * @param {*} data
+ * @returns Promise
+ */
+export const patchUserProfile = (data) => {
+  return request({
+    url: '/v1_0/user/profile',
+    method: 'PATCH',
+    data
+  })
+}
